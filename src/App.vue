@@ -399,7 +399,10 @@ export default {
                 filter: "invert(100%)"
               },
               "-=.25"
-            );
+            )
+            .from(".createdByCss", 0.2, {
+              alpha: 0
+            });
           this.subMenuplay = new TimelineMax({ paused: true });
           this.subMenuplay
             .set(".subMenu", {

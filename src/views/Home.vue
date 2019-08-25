@@ -34,7 +34,7 @@
   </div>
 </template>
 <script>
-import { TimelineLite, TimelineMax, TweenLite, Expo, Power2 } from "gsap/all";
+import { TimelineLite, TimelineMax, TweenLite, Power2 } from "gsap/all";
 import { imageToolTipOnHover, guestNameAnimation } from "../App.directive";
 import _ from "lodash";
 export default {
@@ -212,24 +212,13 @@ export default {
             return list[Math.floor(Math.random() * list.length)];
           };
         }
-        function random(min, max) {
-          if (max == null) {
-            max = min;
-            min = 0;
-          }
-          return function() {
-            return Math.random() * (max - min) + min;
-          };
-        }
-        var colors = ["#1af890", "#DF0A0A", "#5219AA", "#7E0DC9", "#CF368D"];
+        var colors = ["#1af890", "#ff3333", "#ffffff", "#e2f534", "#3957ff"];
         var tl = new TimelineMax({ repeat: -1 });
         for (let i = 0; i < 25; i++) {
           // use colorChange this class to change color of text randomly.
-          tl.to(".colorChange", 1, {
-            webkitTextStrokeColor: sample(colors),
-            repeatDelay: 1,
-            alpha: random(0.6, 1),
-            ease: Expo.easeOut
+          tl.to(".colorChange", 0.5, {
+            color: sample(colors),
+            repeatDelay: 1
           });
         }
       });

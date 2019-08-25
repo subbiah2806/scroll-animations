@@ -10,12 +10,20 @@
           </button>
         </li>
       </ul>
+      <div class="textDefaultFormat createdByCss">
+        <span class="colorChange">created by</span>
+        <a class="a space" v-img-tooltip:top="subbiahTooltip">Subbiah Chandramouli</a>
+      </div>
     </div>
   </div>
 </template>
 <script>
+import { imageToolTipOnHover } from "../App.directive";
 export default {
   name: "fullscreenmenu",
+  directives: {
+    "img-tooltip": imageToolTipOnHover
+  },
   data() {
     return {
       navLists: [
@@ -37,7 +45,13 @@ export default {
         {
           text: "OUR STORY"
         }
-      ]
+      ],
+      subbiahTooltip: {
+        file: "subbiah.gif",
+        right: "5vw",
+        x: undefined,
+        y: "0px"
+      }
     };
   },
   methods: {
@@ -101,6 +115,16 @@ export default {
         justify-content: center;
       }
     }
+  }
+  .createdByCss {
+    position: fixed;
+    bottom: 5px;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+  }
+  .space {
+    margin-left: 5px;
   }
 }
 </style>
