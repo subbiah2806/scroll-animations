@@ -60,7 +60,6 @@ export default {
   height: 100vh;
   width: 100vw;
   top: 44px;
-  @import url("//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css");
   .search {
     position: relative;
     input {

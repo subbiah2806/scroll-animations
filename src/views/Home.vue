@@ -141,10 +141,10 @@ export default {
     });
     if (!this.isnotmobile()) {
       this.moonTooltip.top = undefined;
-      this.moonTooltip.y = 100;
+      this.moonTooltip.y = 0;
       this.moonTooltip.right = "0vw";
       this.moonTooltip2.top = undefined;
-      this.moonTooltip2.y = 60;
+      this.moonTooltip2.y = -50;
       this.moonTooltip2.left = "0vw";
     }
     this.addAnimations();
@@ -361,6 +361,9 @@ export default {
       line-height: 1.7em;
     }
     .scrollDown {
+      @media (max-width: 575.98px) {
+        margin-bottom: 60px;
+      }
       display: flex;
       flex-direction: column;
       justify-content: center;

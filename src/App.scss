@@ -22,6 +22,9 @@ html {
     width: 0px;  //chrome
   }
 }
+*{
+  user-select: none;
+}
 .textDefaultFormat {
   @include textDefault;
 }

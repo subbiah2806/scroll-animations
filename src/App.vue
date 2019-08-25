@@ -49,9 +49,18 @@
           <nav class="first-nav"></nav>
           <nav class="sticky-nav">
             <div class="margin">
-              <div class="heading textDefaultFormat">LUNAR MAX</div>
+              <div class="heading textDefaultFormat">
+                LUNAR
+                <span>{{" MAX"}}</span>
+              </div>
               <div>
                 <ul>
+                  <li v-if="!isnotmobile()" class="subMenuLi">
+                    <i
+                      class="material-icons colorwhite"
+                      v-on:click="opensubMenufunction()"
+                    >keyboard_arrow_down</i>
+                  </li>
                   <li v-for="(list, index) in stickyNavLists" v-bind:key="index">
                     <button
                       v-on:click="updateRoute(list.text)"
@@ -62,6 +71,17 @@
                   </li>
                 </ul>
               </div>
+            </div>
+            <div class="subMenu" v-if="!isnotmobile()">
+              <li class="subMenulists" v-for="(sublist, index) in subMenu" v-bind:key="index">
+                <button
+                  v-if="sublist.text"
+                  v-on:click="updateRoute(sublist.text)"
+                  class="aTagButton"
+                >
+                  <span class="nav-txt textDefaultFormat">{{sublist.text}}</span>
+                </button>
+              </li>
             </div>
           </nav>
         </div>
@@ -150,7 +170,19 @@ export default {
       isloading: true,
       moveTrg: undefined,
       headerMenu: true,
-      screenMenu: false
+      screenMenu: false,
+      opensubMenu: false,
+      subMenu: [
+        {
+          text: "TIMELINE"
+        },
+        {
+          text: "INFO"
+        },
+        {
+          text: "SPECS"
+        }
+      ]
     };
   },
   computed: {
@@ -200,6 +232,14 @@ export default {
         } else {
           this.menu.reverse();
         }
+      }
+    },
+    opensubMenufunction() {
+      this.opensubMenu = !this.opensubMenu;
+      if (this.opensubMenu) {
+        this.subMenuplay.play();
+      } else {
+        this.subMenuplay.reverse();
       }
     },
     moveCircle(e) {
@@ -359,6 +399,30 @@ export default {
                 filter: "invert(100%)"
               },
               "-=.25"
+            );
+          this.subMenuplay = new TimelineMax({ paused: true });
+          this.subMenuplay
+            .set(".subMenu", {
+              display: "block"
+            })
+            .from(".subMenu", 0.1, {
+              alpha: 0
+            })
+            .from(
+              ".subMenu",
+              0.25,
+              {
+                height: "20px"
+              },
+              "-=.1"
+            )
+            .from(
+              ".subMenulists",
+              0.25,
+              {
+                alpha: 0
+              },
+              "-=.1"
             );
         });
       }
@@ -543,10 +607,17 @@ export default {
         align-items: center;
         .heading {
           height: 24px;
+          font-size: 17px;
+          span {
+            font-size: 18px !important;
+            font-weight: 600;
+          }
         }
         @include commonUl;
         ul {
-          padding-top: 5px;
+          @media (min-width: 576px) {
+            padding-top: 5px;
+          }
         }
         .button {
           margin-top: -1px;
@@ -566,6 +637,21 @@ export default {
           opacity: 1 !important;
           font-family: "SF Pro Text", "SF Pro Icons", "Helvetica Neue",
             "Helvetica", "Arial", sans-serif !important;
+        }
+      }
+      .subMenuLi {
+        position: relative;
+        .colorwhite {
+          color: white;
+          font-size: 40px;
+          margin-top: 2px;
+        }
+      }
+      .subMenu {
+        background: black;
+        display: none;
+        li {
+          padding-left: 30px;
         }
       }
     }
