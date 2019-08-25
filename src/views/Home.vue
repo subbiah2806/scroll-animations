@@ -21,10 +21,16 @@
         </div>
       </div>
       <div class="tenvh"></div>
-      <div class="section2"></div>
-      <div class="section3"></div>
-      <div class="section4"></div>
+      <div class="imgscroll-text" v-for="(text, index) in scrollText" v-bind:key="index">
+        <h3>{{text}}</h3>
+        <h3 class="bottom-space">{{text}}</h3>
+      </div>
     </section>
+    <div class="imagescroll hideOnInit">
+      <div :class="scrollImages.includes('image1') ? '':'hide'" class="image image1" ref="image1"></div>
+      <div :class="scrollImages.includes('image2') ? '':'hide'" class="image image2" ref="image2"></div>
+      <div :class="scrollImages.includes('image3') ? '':'hide'" class="image image3" ref="image3"></div>
+    </div>
   </div>
 </template>
 <script>
@@ -59,17 +65,28 @@ export default {
       section4Text: [],
       sectop4Top: false,
       cursor: true,
-      nobackground: false
+      nobackground: false,
+      scrollImages: ["image1", "image2", "image3"],
+      scrollText: [
+        `Using the most accurate industrial 3D printing technology available today, LUNAR is modeled to 0.006 millimeters per pixel precision, based on data captured by NASA's Lunar Reconnaissance Orbiter.`,
+        `Printing level height down to 0.05 millimeters
+          Printing error precision of 0.025 millimeters
+          Up to 0.006 millimeters per pixel precision 3D printing accuracy
+          98%+ modeling accuracy achieved through
+          `,
+        `The Lunar Moon has captivated the human imagination throughout history. Though it is ever present, there is so little we know. We wanted to bring the Moon closer, to bring all of our stargazing dreams into reality. Our mission is to inspire as many space lovers as we can, helping to awaken and educate a new generation of astronomy enthusiasts through the power of technology`
+      ]
     };
   },
   watch: {
     y: async function(to) {
       if (to >= 0) {
+        const yHeight = window.pageYOffset;
         let scrollPercentage = (to / this.clientHeight) * this.noOfScreens;
         this.scrollBarAnimation.progress(
           scrollPercentage / (this.noOfScreens - 1)
         );
-        if (window.pageYOffset > this.stickyOffsetTop) {
+        if (yHeight > this.stickyOffsetTop) {
           if (!this.sticky.className.split(" ").includes("sticky")) {
             this.sticky.classList.add("sticky");
           }
@@ -79,14 +96,21 @@ export default {
           }
         }
         const minsticky = this.scrollImageOffsetTop - 44;
-        if (window.pageYOffset > minsticky) {
+        if (yHeight > minsticky) {
           if (!this.scrollImage.className.split(" ").includes("stickyImage")) {
             this.scrollImage.classList.add("stickyImage");
           }
-          const scrollImageAnimationProgress =
-            (window.pageYOffset - minsticky) / 300;
-          if (scrollImageAnimationProgress <= 1) {
-            this.scrollImageAnimation.progress(scrollImageAnimationProgress);
+          const scrollPercentage =
+            ((yHeight - minsticky) /
+              (this.clientHeight - this.screenheight - minsticky)) *
+            3;
+          this.scrollImageAnimation.progress(scrollPercentage / 3);
+          if (scrollPercentage <= 0.7) {
+            this.scrollImages = ["image1", "image2", "image3"];
+          } else if (scrollPercentage > 1 && scrollPercentage <= 2) {
+            this.scrollImages = ["image1", "image2"];
+          } else if (scrollPercentage > 2) {
+            this.scrollImages = ["image1"];
           }
         } else {
           if (this.scrollImage.className.split(" ").includes("stickyImage")) {
@@ -130,6 +154,10 @@ export default {
           window.innerHeight || 0
         );
         this.clientHeight = document.body.clientHeight;
+        this.scrollImageSessionHeight =
+          this.clientHeight - this.scrollImageOffsetTop;
+        this.noOfScrollScreen =
+          this.scrollImageSessionHeight / this.screenheight;
         this.noOfScreens = this.clientHeight / this.screenheight;
         const section1FaceIn = new TimelineLite({});
         this.$refs.Home.style.opacity = 1;
@@ -164,7 +192,7 @@ export default {
         this.scrollBarAnimation.to(".scrollbar-track", 0.1, { y: "17vh" });
         this.scrollImageAnimation = new TimelineLite({ paused: true });
         this.scrollImageAnimation.to(".imagescroll", 0.1, {
-          scale: 0.9
+          scale: 0.8
         });
         this.customScroll();
         function sample(list) {
@@ -207,11 +235,6 @@ export default {
       };
       this.y = 0;
       this.requestId = null;
-
-      TweenLite.set(this.scroller.target, {
-        rotation: 0.01,
-        force3D: true
-      });
       this.updateScroller();
       const throttleScroll = _.throttle(this.onScroll, 100, {
         trailing: false
@@ -242,12 +265,6 @@ export default {
       if (Math.abs(scrollY - this.y) < 0.05 || resized) {
         this.y = scrollY;
         this.scroller.scrollRequest = 0;
-      }
-      const screenWidth = window.innerWidth;
-      if (screenWidth && screenWidth < 575.98) {
-        TweenLite.set(this.scroller.target, {
-          y: -this.y
-        });
       }
       this.requestId =
         this.scroller.scrollRequest > 0
@@ -286,17 +303,9 @@ export default {
   opacity: 0;
   width: 100%;
   transition: opacity 1s linear;
-  @media (max-width: 575.98px) {
-    position: fixed;
-  }
-  @media (min-width: 576px) {
-    display: flex;
-    flex-direction: column;
-  }
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  .fullHeight {
-    height: 100vh;
-  }
   @mixin spaceBetween {
     display: flex;
     justify-content: space-between;
@@ -355,14 +364,47 @@ export default {
   .tenvh {
     height: 10vh;
   }
-  .section2 {
-    height: 100vh;
+  .imgscroll-text {
+    height: 200vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    h3 {
+      margin: 0 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+    .bottom-space {
+      visibility: hidden;
+    }
   }
-  .section3 {
-    height: 100vh;
-  }
-  .section4 {
-    height: 100vh;
+  .imagescroll {
+    position: absolute;
+    top: 110vh;
+    height: calc(100vh - 44px);
+    width: 100%;
+    z-index: -1;
+    .image {
+      height: calc(100vh - 44px);
+      width: 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      position: absolute;
+      transition: opacity 0.5s linear;
+    }
+    .image1 {
+      background-image: url(../assets/moon2.png);
+    }
+    .image2 {
+      background-image: url(../assets/moon3.png);
+    }
+    .image3 {
+      background-image: url(../assets/moon4.png);
+    }
   }
 }
 </style>

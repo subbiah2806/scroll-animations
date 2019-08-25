@@ -48,11 +48,6 @@
       <transition :name="transitionName">
         <router-view></router-view>
       </transition>
-      <div class="imagescroll hideOnInit">
-        <div class="image image1"></div>
-        <div class="image image2"></div>
-        <div class="image image3"></div>
-      </div>
     </div>
   </div>
 </template>
@@ -470,29 +465,6 @@ export default {
             "Helvetica", "Arial", sans-serif !important;
         }
       }
-    }
-  }
-  .imagescroll {
-    position: absolute;
-    top: 110vh;
-    height: calc(100vh - 44px);
-    width: 100%;
-    .image {
-      height: calc(100vh - 44px);
-      width: 100%;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-      position: absolute;
-    }
-    .image1 {
-      background-image: url(./assets/moon2.png);
-    }
-    .image2 {
-      background-image: url(./assets/moon3.png);
-    }
-    .image3 {
-      background-image: url(./assets/moon4.png);
     }
   }
 }
