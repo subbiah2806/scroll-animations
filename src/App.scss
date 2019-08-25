@@ -1,0 +1,128 @@
+$primary: #fff;
+$primaryDull: hsla(0, 0%, 100%, 0.35);
+$secondary: rgb(118, 62, 223);
+$backgroundColor: #1b1b1b;
+$mousepointer: 1000;
+$loading: 1001;
+$topNavBars: 999;
+$scrollBar: 999;
+$Home-right: 999;
+$follower: 998;
+
+@mixin textDefault {
+  display: inline;
+  color: #fff;
+}
+/* Remove scrollbar space */
+html {
+  scrollbar-width: none; //firefox
+  ::-webkit-scrollbar {
+    width: 0px;  //chrome
+  }
+}
+.textDefaultFormat {
+  @include textDefault;
+}
+h1 {
+  margin: 0px;
+  margin-bottom: 15px;
+  transition: color 450ms ease;
+  font-weight: 900;
+  text-transform: uppercase;
+  @include textDefault;
+}
+.h1-stroke {
+  -webkit-text-stroke: 1.5px #fff;
+  color: transparent !important;
+}
+.a {
+  border-bottom: 1px solid $secondary;
+  transition: all 250ms ease;
+  color: $secondary;
+  text-decoration: none !important;
+  cursor: none;
+  background-color: transparent;
+}
+.a:hover {
+  color: $primaryDull;
+  outline: 0;
+  border-bottom-color: $primaryDull;
+}
+.aTagButton {
+  display: block;
+}
+.aTagButton:hover {
+  .textDefaultFormat {
+    border-radius: 16px;
+    background-color: white;
+    transition: background-color .25s linear;
+    color: black;
+  }
+}
+.hideOnInit{
+  opacity: 0;
+}
+.sticky {
+  position: fixed !important;
+  top: 0 !important;
+  width: 100% !important;
+}
+.stickyImage {
+  position: fixed !important;
+  top: 44px !important;
+  width: 100% !important;
+}
+.img-tootltip {
+  position: fixed;
+  opacity: 0;
+  border-radius: 15px;
+}
+.text-center {
+  text-align: center;
+}
+.zindex1 {
+  z-index: 1;
+}
+@media (max-width: 575.98px) {
+  h1 {
+    font-size: 12.2vw;
+    line-height: 1.05em;
+    margin-bottom: 25px;
+  }
+  .img-tootltip {
+    width: 77vw;
+  }
+}
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) and (max-width: 767.98px) {
+  h1 {
+    font-size: 13.2vw;
+    line-height: 1.03em;
+  }
+  .img-tootltip {
+    width: 67vw;
+  }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) and (max-width: 991.98px) {
+  h1 {
+    font-size: 13vw;
+    line-height: 1em;
+  }
+  .img-tootltip {
+    width: 54vw;
+  }
+}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  h1 {
+    font-size: 7.5vw;
+    line-height: 1em;
+  }
+  .img-tootltip {
+    width: 54vw;
+  }
+}
