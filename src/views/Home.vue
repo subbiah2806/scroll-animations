@@ -8,10 +8,10 @@
           <div class="textDefaultFormat lineHeight Zindex1">
             APOLLO 50TH ANNIVERSARY
             <br />
-            <a class="a" v-img-tooltip:top="subbiahTooltip">LIMITED EDITION</a>
+            <a class="a" v-img-tooltip:top="moonTooltip">LIMITED EDITION</a>
             <br />200mm LUNAR
             <br />
-            <a class="a" v-img-tooltip:down="subbiahTooltip">Our biggest model ever</a>
+            <a class="a" v-img-tooltip:down="moonTooltip2">Our biggest model ever</a>
             <br />$499 USD
           </div>
         </div>
@@ -52,10 +52,17 @@ export default {
       body: undefined,
       scroller: undefined,
       requestId: undefined,
-      subbiahTooltip: {
-        file: "subbiah.gif",
+      moonTooltip: {
+        file: "moongif.gif",
         right: "-20vw",
         top: "0vh",
+        x: undefined,
+        y: undefined
+      },
+      moonTooltip2: {
+        file: "moongif2.gif",
+        left: "0",
+        top: "0",
         x: undefined,
         y: undefined
       },
@@ -132,6 +139,14 @@ export default {
       top: 0,
       behavior: "smooth"
     });
+    if (!this.isnotmobile()) {
+      this.moonTooltip.top = undefined;
+      this.moonTooltip.y = 100;
+      this.moonTooltip.right = "0vw";
+      this.moonTooltip2.top = undefined;
+      this.moonTooltip2.y = 60;
+      this.moonTooltip2.left = "0vw";
+    }
     this.addAnimations();
   },
   destroyed() {

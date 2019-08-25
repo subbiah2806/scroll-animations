@@ -14,7 +14,7 @@
       <a class="aTagButton" href="/">
         <div class="textDefaultFormat">Home</div>
       </a>
-      <a class="aTagButton" v-on:click="goBack()">
+      <a class="aTagButton" href="/">
         <div class="textDefaultFormat">go-back</div>
       </a>
     </div>
@@ -29,18 +29,15 @@ export default {
       alpha: 1
     });
     const mousepointer = document.getElementById("mousePointer");
-    mousepointer.classList.remove("mousepointerSmall");
+    if (mousepointer && mousepointer.classList) {
+      mousepointer.classList.remove("mousepointerSmall");
+    }
     document.addEventListener("keypress", e => {
       e = e || window.event;
       if (e.shiftKey && e.key === "B") {
         window.location = window.location.origin;
       }
     });
-  },
-  methods: {
-    goBack() {
-      this.$router.go(-1);
-    }
   }
 };
 </script>

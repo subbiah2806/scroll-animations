@@ -11,6 +11,18 @@
           <nav class="first-nav">
             <div class="margin">
               <ul>
+                <li>
+                  <div
+                    class="Home-right hideOnInit"
+                    @mouseover="menuAnimate(true)"
+                    @mouseleave="menuAnimate(false)"
+                    v-on:click="menuOPen"
+                  ></div>
+                  <div class="follower hideOnInit" v-on:click="menuOPen">
+                    <div class="dash dash-top"></div>
+                    <div class="dash dash-bottom"></div>
+                  </div>
+                </li>
                 <li v-for="(list, index) in navLists" v-bind:key="index">
                   <button
                     v-hover-on-a-tag
@@ -26,12 +38,15 @@
                     class="aTagButton"
                     v-if="list.img"
                   >
-                    <img v-if="list.img" :src="list.img" class="nav-img" />
+                    <img v-if="list.img" :src="list.img" :class="`img${index}`" class="nav-img" />
                   </button>
                 </li>
               </ul>
             </div>
           </nav>
+        </div>
+        <div class="topStickyNavBars zindex1 hideOnInit">
+          <nav class="first-nav"></nav>
           <nav class="sticky-nav">
             <div class="margin">
               <div class="heading textDefaultFormat">LUNAR MAX</div>
@@ -50,15 +65,7 @@
             </div>
           </nav>
         </div>
-        <div
-          class="Home-right hideOnInit"
-          @mouseover="menuAnimate(true)"
-          @mouseleave="menuAnimate(false)"
-        ></div>
-        <div class="follower hideOnInit">
-          <div class="dash dash-top"></div>
-          <div class="dash dash-bottom"></div>
-        </div>
+        <ScreenMenu />
       </div>
       <transition :name="transitionName">
         <router-view></router-view>
@@ -84,6 +91,7 @@ import {
 import astrologo from "./assets/astro-logo.png";
 import menubag from "./assets/img-menu-bag.png";
 import { hoverOnATag, hoverOnImgTag } from "./App.directive";
+import fullscreenmenu from "./components/fullscreenmenu.vue";
 export default {
   name: "app",
   directives: {
@@ -91,7 +99,8 @@ export default {
     "hover-on-img-tag": hoverOnImgTag
   },
   components: {
-    loading
+    loading,
+    ScreenMenu: fullscreenmenu
   },
   data() {
     return {
@@ -140,7 +149,8 @@ export default {
       transitionName: undefined,
       isloading: true,
       moveTrg: undefined,
-      headerMenu: true
+      headerMenu: true,
+      screenMenu: false
     };
   },
   computed: {
@@ -149,6 +159,12 @@ export default {
   },
   mounted() {
     this.checkHeader();
+    if (!this.isnotmobile()) {
+      this.navLists = this.navLists.filter(list => list.img);
+      this.stickyNavLists = this.stickyNavLists.filter(list => list.button);
+    } else {
+      window.addEventListener("resize", this.reloadPage);
+    }
     // eslint-disable-next-line
     const plugins = [TextPlugin, CSSPlugin];
     setTimeout(() => {
@@ -160,8 +176,32 @@ export default {
   },
   destroyed() {
     window.removeEventListener("mousemove", e => this.moveCircle(e));
+    window.removeEventListener("resize", this.reloadPage);
   },
   methods: {
+    reloadPage() {
+      window.location = window.location.origin;
+    },
+    menuOPen() {
+      this.screenMenu = !this.screenMenu;
+      if (this.screenMenu) {
+        document.body.style.overflow = "hidden";
+        this.fullscreenmenu.play();
+        if (this.isnotmobile()) {
+          this.menu.reverse();
+        } else {
+          this.menu.play();
+        }
+      } else {
+        document.body.style.overflow = "";
+        this.fullscreenmenu.reverse();
+        if (this.isnotmobile()) {
+          this.menu.play();
+        } else {
+          this.menu.reverse();
+        }
+      }
+    },
     moveCircle(e) {
       TweenLite.to("#mousePointer", 0.5, {
         css: {
@@ -211,10 +251,18 @@ export default {
     menuAnimate(animate) {
       if (this.isnotmobile()) {
         if (animate) {
-          this.menu.play();
+          if (this.screenMenu) {
+            this.menu.reverse();
+          } else {
+            this.menu.play();
+          }
           this.moveMenu = true;
         } else {
-          this.menu.reverse();
+          if (this.screenMenu) {
+            this.menu.play();
+          } else {
+            this.menu.reverse();
+          }
           this.moveMenu = false;
         }
       }
@@ -280,6 +328,38 @@ export default {
           if (this.isnotmobile()) {
             window.addEventListener("mousemove", this.moveCircle, true);
           }
+          this.fullscreenmenu = new TimelineMax({ paused: true });
+          this.fullscreenmenu
+            .set(".fullscreenmenu", {
+              display: "block"
+            })
+            .from(".fullscreenmenu", 0.1, {
+              alpha: 0
+            })
+            .from(
+              ".fullscreenmenu",
+              0.25,
+              {
+                height: "200px"
+              },
+              "-=.1"
+            )
+            .to(
+              ".first-nav",
+              0.25,
+              {
+                backgroundColor: "black"
+              },
+              "-=.25"
+            )
+            .to(
+              ".img0",
+              0.025,
+              {
+                filter: "invert(100%)"
+              },
+              "-=.25"
+            );
         });
       }
     }
@@ -302,11 +382,7 @@ export default {
     border-radius: 80%;
     mix-blend-mode: exclusion;
     @media (max-width: 575.98px) {
-      width: 55px;
-      height: 55px;
-      margin: -27.5px 0 0 -27.5px;
-      top: 50vh;
-      right: 0;
+      display: none;
     }
     @media (min-width: 576px) {
       width: 100px;
@@ -317,37 +393,39 @@ export default {
     }
   }
   .follower {
-    z-index: $follower;
-    position: fixed;
-    mix-blend-mode: exclusion;
-    top: 0;
-    left: 0;
     border-radius: 80%;
-    background: hsl(0, 0%, 98%);
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     @media (max-width: 575.98px) {
-      width: 40px;
-      height: 40px;
-      margin: -20px 0 0 -20px;
+      width: 45px;
+      height: 45px;
+      margin: 0;
     }
     @media (min-width: 576px) {
+      z-index: $follower;
+      position: fixed;
+      mix-blend-mode: exclusion;
+      top: 0;
+      left: 0;
+      background: hsl(0, 0%, 98%);
       width: 55px;
       height: 55px;
       margin: -27.5px 0 0 -27.5px;
     }
     .dash {
       height: 2px;
-      margin-top: 5px;
       margin-bottom: 5px;
-      background-color: #111;
       @media (max-width: 575.98px) {
+        margin-top: 3px;
         width: 15px;
+        background-color: rgb(182, 173, 173);
       }
       @media (min-width: 576px) {
+        margin-top: 5px;
         width: 20px;
+        background-color: #111;
       }
     }
   }
@@ -422,25 +500,6 @@ export default {
         position: relative;
         list-style: none;
         vertical-align: top;
-        a {
-          height: 100%;
-          color: white;
-          padding: 0 10px;
-          .nav-txt {
-            padding: 5px 6px;
-            font-size: 14px;
-            line-height: 3.14286;
-            font-weight: 400;
-            letter-spacing: -0.01em;
-            font-family: "Righteous", cursive;
-            opacity: 0.8;
-          }
-          .nav-img {
-            height: 20px;
-            width: auto;
-            filter: brightness(1.7);
-          }
-        }
       }
     }
   }
@@ -462,6 +521,16 @@ export default {
         @include navMargin;
         @include commonUl;
       }
+    }
+  }
+  .topStickyNavBars {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    .first-nav {
+      width: 100%;
+      height: 44px;
+      visibility: hidden;
     }
     .sticky-nav {
       background: black;

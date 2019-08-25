@@ -5,9 +5,10 @@ $backgroundColor: #1b1b1b;
 $mousepointer: 1000;
 $loading: 1001;
 $topNavBars: 999;
-$scrollBar: 999;
+$scrollBar: 996;
 $Home-right: 999;
 $follower: 998;
+$fullscreenmenu: 997;
 @import url('https://fonts.googleapis.com/css?family=Arvo&display=swap');
 
 @mixin textDefault {
@@ -62,11 +63,15 @@ button {
   .textDefaultFormat {
     padding: 6px 8px;
     font-size: 14px;
-    font-family: 'Arvo', serif;
-    opacity: .8;
+    line-height: 3.14286;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    font-family: "Righteous", cursive;
+    opacity: 0.8;
   }
   img {
     height: 25px;
+    filter: brightness(1.7);
   }
   &:hover {
     text-decoration: none;
