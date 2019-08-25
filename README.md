@@ -1,27 +1,16 @@
-## Project setup
+## Follow the steps below to setup the application
+
+## Install node
+```
+https://nodejs.org/en/download/
+```
+
+## Install node dependencies
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Compiles and run the application
 ```
 npm run serve
 ```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

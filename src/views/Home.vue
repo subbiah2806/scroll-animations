@@ -34,8 +34,7 @@
   </div>
 </template>
 <script>
-/* eslint-disable */
-import { TimelineLite, TimelineMax, Linear, TweenLite, Expo } from "gsap/all";
+import { TimelineLite, TimelineMax, TweenLite, Expo, Power2 } from "gsap/all";
 import { imageToolTipOnHover, guestNameAnimation } from "../App.directive";
 import _ from "lodash";
 export default {
@@ -124,7 +123,6 @@ export default {
             this.section1ScrollBar.progress(section1ScrollBar);
           }
           this.section1.progress(scrollPercentage);
-        } else if (scrollPercentage > 1.1) {
         }
       }
     }
@@ -159,7 +157,6 @@ export default {
         this.noOfScrollScreen =
           this.scrollImageSessionHeight / this.screenheight;
         this.noOfScreens = this.clientHeight / this.screenheight;
-        const section1FaceIn = new TimelineLite({});
         this.$refs.Home.style.opacity = 1;
         const initAnimation = new TimelineLite();
         initAnimation
@@ -251,8 +248,6 @@ export default {
       var resized = this.scroller.resizeRequest > 0;
 
       if (resized) {
-        var height = this.scroller.target.clientHeight;
-        this.body.style.height = height + "px";
         this.scroller.resizeRequest = 0;
       }
 

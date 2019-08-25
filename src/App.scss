@@ -8,6 +8,7 @@ $topNavBars: 999;
 $scrollBar: 999;
 $Home-right: 999;
 $follower: 998;
+@import url('https://fonts.googleapis.com/css?family=Arvo&display=swap');
 
 @mixin textDefault {
   display: inline;
@@ -48,15 +49,38 @@ h1 {
   outline: 0;
   border-bottom-color: $primaryDull;
 }
-.aTagButton {
-  display: block;
+button {
+  outline: none;
+  cursor: none;
 }
-.aTagButton:hover {
+.aTagButton {
+  height: 100%;
+  background: transparent;
+  border: 0;
+  cursor: none;
+  transition: background-color .25s linear;
   .textDefaultFormat {
-    border-radius: 16px;
-    background-color: white;
-    transition: background-color .25s linear;
-    color: black;
+    padding: 6px 8px;
+    font-size: 14px;
+    font-family: 'Arvo', serif;
+    opacity: .8;
+  }
+  img {
+    height: 25px;
+  }
+  &:hover {
+    text-decoration: none;
+    .textDefaultFormat {
+      border-radius: 16px;
+      background-color: white;
+      color: black;
+    }
+  }
+  &:focus {
+    .textDefaultFormat {
+      border-radius: 16px;
+      background-color: #763edf;
+    }
   }
 }
 .hideOnInit{

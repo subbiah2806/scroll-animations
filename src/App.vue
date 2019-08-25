@@ -2,48 +2,63 @@
   <div id="app">
     <loading />
     <div v-if="isloading === false">
-      <div class="scrollBar hideOnInit">
-        <div class="scrollbar-track"></div>
-      </div>
       <div v-if="isnotmobile()" class="mousepointer hideOnInit" id="mousePointer"></div>
-      <div class="topNavBars hideOnInit">
-        <nav class="first-nav">
-          <div class="margin">
-            <ul>
-              <li v-for="(list, index) in navLists" v-bind:key="index">
-                <a v-hover-on-a-tag v-if="!list.img" class="aTagButton">
-                  <span v-if="list.text" class="nav-txt textDefaultFormat">{{list.text}}</span>
-                </a>
-                <a v-hover-on-img-tag class="img-center" v-if="list.img">
-                  <img v-if="list.img" :src="list.img" class="nav-img" />
-                </a>
-              </li>
-            </ul>
-          </div>
-        </nav>
-        <nav class="sticky-nav">
-          <div class="margin">
-            <div class="heading textDefaultFormat">LUNAR MAX</div>
-            <div>
+      <div v-if="headerMenu">
+        <div class="scrollBar hideOnInit">
+          <div class="scrollbar-track"></div>
+        </div>
+        <div class="topNavBars hideOnInit">
+          <nav class="first-nav">
+            <div class="margin">
               <ul>
-                <li v-for="(list, index) in stickyNavLists" v-bind:key="index">
-                  <a :class="list.button ? 'button': 'aTagButton'">
+                <li v-for="(list, index) in navLists" v-bind:key="index">
+                  <button
+                    v-hover-on-a-tag
+                    v-on:click="updateRoute(list.text)"
+                    v-if="!list.img"
+                    class="aTagButton"
+                  >
                     <span v-if="list.text" class="nav-txt textDefaultFormat">{{list.text}}</span>
-                  </a>
+                  </button>
+                  <button
+                    v-hover-on-img-tag
+                    v-on:click="updateRoute(list.text)"
+                    class="aTagButton"
+                    v-if="list.img"
+                  >
+                    <img v-if="list.img" :src="list.img" class="nav-img" />
+                  </button>
                 </li>
               </ul>
             </div>
-          </div>
-        </nav>
-      </div>
-      <div
-        class="Home-right hideOnInit"
-        @mouseover="menuAnimate(true)"
-        @mouseleave="menuAnimate(false)"
-      ></div>
-      <div class="follower hideOnInit">
-        <div class="dash dash-top"></div>
-        <div class="dash dash-bottom"></div>
+          </nav>
+          <nav class="sticky-nav">
+            <div class="margin">
+              <div class="heading textDefaultFormat">LUNAR MAX</div>
+              <div>
+                <ul>
+                  <li v-for="(list, index) in stickyNavLists" v-bind:key="index">
+                    <button
+                      v-on:click="updateRoute(list.text)"
+                      :class="list.button ? 'button': 'aTagButton'"
+                    >
+                      <span v-if="list.text" class="nav-txt textDefaultFormat">{{list.text}}</span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+        </div>
+        <div
+          class="Home-right hideOnInit"
+          @mouseover="menuAnimate(true)"
+          @mouseleave="menuAnimate(false)"
+        ></div>
+        <div class="follower hideOnInit">
+          <div class="dash dash-top"></div>
+          <div class="dash dash-bottom"></div>
+        </div>
       </div>
       <transition :name="transitionName">
         <router-view></router-view>
@@ -103,7 +118,8 @@ export default {
           text: "OUR STORY"
         },
         {
-          img: menubag
+          img: menubag,
+          text: "cart"
         }
       ],
       stickyNavLists: [
@@ -123,7 +139,8 @@ export default {
       ],
       transitionName: undefined,
       isloading: true,
-      moveTrg: undefined
+      moveTrg: undefined,
+      headerMenu: true
     };
   },
   computed: {
@@ -131,6 +148,7 @@ export default {
     ...mapActions(["loading"])
   },
   mounted() {
+    this.checkHeader();
     // eslint-disable-next-line
     const plugins = [TextPlugin, CSSPlugin];
     setTimeout(() => {
@@ -152,37 +170,39 @@ export default {
         },
         ease: Power2.easeOuts
       });
-      if (this.moveMenu) {
-        TweenMax.to(".follower", 0.5, {
-          x: e.clientX,
-          y: e.clientY,
-          ease: Sine.easeOut
-        });
-        if (!this.increasedmousePointer) {
-          this.increasedmousePointer = true;
-          TweenMax.to("#mousePointer", 0.5, {
-            scale: 1.5,
-            background: "white"
+      if (this.headerMenu) {
+        if (this.moveMenu) {
+          TweenMax.to(".follower", 0.5, {
+            x: e.clientX,
+            y: e.clientY,
+            ease: Sine.easeOut
           });
+          if (!this.increasedmousePointer) {
+            this.increasedmousePointer = true;
+            TweenMax.to("#mousePointer", 0.5, {
+              scale: 1.5,
+              background: "white"
+            });
+          }
+        } else {
+          this.increasedmousePointer = false;
+          const menu = new TimelineMax({ paused: true });
+          menu
+            .to(".follower", 1, {
+              x: this.center.x,
+              y: this.center.y,
+              ease: Back.easeOut
+            })
+            .to(
+              "#mousePointer",
+              0.5,
+              {
+                scale: 1
+              },
+              0
+            );
+          menu.play();
         }
-      } else {
-        this.increasedmousePointer = false;
-        const menu = new TimelineMax({ paused: true });
-        menu
-          .to(".follower", 1, {
-            x: this.center.x,
-            y: this.center.y,
-            ease: Back.easeOut
-          })
-          .to(
-            "#mousePointer",
-            0.5,
-            {
-              scale: 1
-            },
-            0
-          );
-        menu.play();
       }
     },
     isnotmobile() {
@@ -198,10 +218,25 @@ export default {
           this.moveMenu = false;
         }
       }
+    },
+    updateRoute(route) {
+      this.$router.push(route);
+    },
+    checkHeader() {
+      const to = this.$route;
+      this.headerMenu =
+        (to.matched &&
+          to.matched[0] &&
+          to.matched[0].props &&
+          to.matched[0].props.default &&
+          to.matched[0].props.default.headerMenu) === false
+          ? false
+          : true;
     }
   },
   watch: {
     $route(to, from) {
+      this.checkHeader();
       const toDepth = to.path.split("/").length;
       const fromDepth = from.path.split("/").length;
       this.transitionName = toDepth < fromDepth ? "slide-right" : "slide-left";
@@ -212,34 +247,36 @@ export default {
     isloading(value) {
       if (value === false) {
         this.$nextTick(() => {
-          const menuContainer = document.querySelector(".Home-right");
-          const menuContainerRect = menuContainer.getBoundingClientRect();
-          this.center = {
-            x: menuContainerRect.right - menuContainerRect.width / 2,
-            y: menuContainerRect.top + menuContainerRect.height / 2
-          };
-          TweenMax.to(".follower", 0.1, {
-            x: this.center.x,
-            y: this.center.y,
-            ease: Back.easeOut
-          });
-          this.menu = new TimelineMax({ paused: true });
-          this.menu.to(".dash-top", 0.1, {
-            rotation: 90,
-            y: 5
-          });
-          this.menu
-            .to(
-              ".dash-bottom",
-              0.1,
-              {
-                y: -5
-              },
-              0
-            )
-            .to(".dash", 0.1, {
-              rotation: "+=360"
+          if (this.headerMenu) {
+            const menuContainer = document.querySelector(".Home-right");
+            const menuContainerRect = menuContainer.getBoundingClientRect();
+            this.center = {
+              x: menuContainerRect.right - menuContainerRect.width / 2,
+              y: menuContainerRect.top + menuContainerRect.height / 2
+            };
+            TweenMax.to(".follower", 0.1, {
+              x: this.center.x,
+              y: this.center.y,
+              ease: Back.easeOut
             });
+            this.menu = new TimelineMax({ paused: true });
+            this.menu.to(".dash-top", 0.1, {
+              rotation: 90,
+              y: 5
+            });
+            this.menu
+              .to(
+                ".dash-bottom",
+                0.1,
+                {
+                  y: -5
+                },
+                0
+              )
+              .to(".dash", 0.1, {
+                rotation: "+=360"
+              });
+          }
           if (this.isnotmobile()) {
             window.addEventListener("mousemove", this.moveCircle, true);
           }
@@ -370,11 +407,6 @@ export default {
     max-width: 1200px;
     padding: 0 22px;
     height: 100%;
-    .img-center {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
   }
   @mixin commonUl {
     ul {
@@ -452,11 +484,13 @@ export default {
           font-size: 12px;
           border-color: #07c;
           background: linear-gradient(#42a1ec, #0070c9);
-          border-width: 1px;
-          border-style: solid;
+          border-width: 0;
           border-radius: 12px;
-          padding: 3px 11px;
+          padding: 4px 12px;
           margin-left: 20px;
+          &:focus {
+            background: #763edf;
+          }
         }
         .nav-txt {
           font-size: 13px !important;
